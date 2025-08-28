@@ -6,7 +6,7 @@
 /*   By: oiskanda <oiskanda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/23 23:40:54 by oiskanda          #+#    #+#             */
-/*   Updated: 2025/08/23 23:51:01 by oiskanda         ###   ########.fr       */
+/*   Updated: 2025/08/27 13:37:27 by oiskanda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int main()
         std::cout << alice << std::endl;
         std::cout << contract << std::endl;
 
-        alice.signForm(contract); // success
+        alice.signForm(contract);
         std::cout << contract << std::endl;
 
         Bureaucrat bob("Bob", 100);
@@ -32,13 +32,13 @@ int main()
         std::cout << bob << std::endl;
         std::cout << secret << std::endl;
 
-        bob.signForm(secret); // fails, exception caught
+        bob.signForm(secret);
         std::cout << secret << std::endl;
 
     } catch (std::exception& e) {
         std::cerr << "Exception: " << e.what() << std::endl;
     }
-	
+
     try {
         std::cout << "== Valid signing ==" << std::endl;
         Bureaucrat b1("Alice", 40);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Array.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: omar-iskandarani <omar-iskandarani@stud    +#+  +:+       +#+        */
+/*   By: oiskanda <oiskanda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 02:13:10 by omar-iskand       #+#    #+#             */
-/*   Updated: 2025/08/27 02:13:11 by omar-iskand      ###   ########.fr       */
+/*   Updated: 2025/08/27 13:40:59 by oiskanda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,18 +23,14 @@ private:
     unsigned int _size;
 
 public:
-    // Default constructor
     Array() : _data(NULL), _size(0) {}
 
-    // Constructor with size
     Array(unsigned int n) : _data(new T[n]()), _size(n) {}
 
-    // Copy constructor
     Array(const Array& other) : _data(NULL), _size(0) {
         *this = other;
     }
 
-    // Assignment operator
     Array& operator=(const Array& rhs) {
         if (this != &rhs) {
             delete[] _data;
@@ -50,26 +46,22 @@ public:
         return *this;
     }
 
-    // Destructor
     ~Array() {
         delete[] _data;
     }
 
-    // Operator[] with bounds check
     T& operator[](unsigned int index) {
         if (index >= _size)
             throw std::out_of_range("Index out of range");
         return _data[index];
     }
 
-    // Const version of operator[]
     const T& operator[](unsigned int index) const {
         if (index >= _size)
             throw std::out_of_range("Index out of range");
         return _data[index];
     }
 
-    // Size function
     unsigned int size() const {
         return _size;
     }
