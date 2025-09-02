@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oiskanda <oiskanda@student.42.fr>          +#+  +:+       +#+        */
+/*   By: omar-iskandarani <omar-iskandarani@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/31 21:41:46 by oiskanda          #+#    #+#             */
-/*   Updated: 2025/09/01 17:31:03 by oiskanda         ###   ########.fr       */
+/*   Updated: 2025/09/03 02:47:21 by omar-iskand      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,18 +15,12 @@
 int main(int argc, char **argv)
 {
 	std::vector<int> nums = convertToVector(argc, argv);
-	checkSorted(nums);
-    std::pair<std::vector<int>, std::vector<int> > result = slpitToPairs(nums);
-    std::vector<int> winners = result.first;
-    std::vector<int> losers  = result.second;
-    // std::pair<std::vector<int>, std::vector<int> > result = slpitToPairs(winners);
-    std::cout << "Winners: ";
-    for (std::vector<int>::size_type k = 0; k < winners.size(); ++k)
-        std::cout << winners[k] << " ";
-    std::cout << "\nLosers: ";
-    for (std::vector<int>::size_type k = 0; k < losers.size(); ++k)
-        std::cout << losers[k] << " ";
+    if (checkNegative(nums) && checkDuplicates(nums))
+        return 1;
+    std::vector<int> winners = makingPairs(nums);
+    // std::vector<int> losers = makingPairs(nums);
+    for (std::vector<int>::size_type i = 0; winners[i]; i++)
+        std::cout << winners[i] << " ";
     std::cout << std::endl;
-
     return 0;
 }

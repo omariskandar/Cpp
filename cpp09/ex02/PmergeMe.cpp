@@ -3,14 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   PmergeMe.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oiskanda <oiskanda@student.42.fr>          +#+  +:+       +#+        */
+/*   By: omar-iskandarani <omar-iskandarani@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/31 21:35:13 by oiskanda          #+#    #+#             */
-/*   Updated: 2025/09/01 17:31:34 by oiskanda         ###   ########.fr       */
+/*   Updated: 2025/09/03 02:48:34 by omar-iskand      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "PmergeMe.hpp"
+
+int comparisons = 0;
 
 int	checkNegative(std::vector <int> numbers)
 {
@@ -39,12 +41,28 @@ int	checkDuplicates(std::vector <int> numbers)
 	return (0);
 }
 
+static int checkValidNumber(char *argv)
+{
+    for (int i = 0; argv[i]; i++)
+    {
+        if (!isdigit(argv[i]))
+        {
+            std::cout << "Must only contain digits\n";
+            return (1);
+        }
+    }
+    return (0);
+}
+
 std::vector<int> convertToVector(int argc, char **argv)
 {
 	std::vector <int> numbers;
+
 	for (int i = 1; i < argc; i++)
 	{
-		numbers.push_back(atoi(argv[i]));
+        if (checkValidNumber(argv[i]))
+            exit (1);
+        numbers.push_back(atoi(argv[i]));
 	}
 	return numbers;
 }
@@ -63,23 +81,25 @@ void checkSorted(std::vector <int> numbers)
 	exit(0);
 }
 
-std::pair<std::vector<int>, std::vector<int> >
-slpitToPairs(std::vector <int>& numbers)
+std::vector<int> makingPairs(std::vector<int> nums)
 {
-	std::vector <int> losers;
-	std::vector <int> winners;
-	for (std::vector<int>::size_type i = 0; i < numbers.size(); i += 2)
-	{
-        if (numbers[i] > numbers[i + 1])
+    std::vector<int> winners;
+    std::vector<int> losers;
+    
+    for (std::vector<int>::size_type i = 0; i < nums.size(); i += 2)
+    {
+        if (nums[i] < nums[i + 1])
         {
-            winners.push_back(numbers[i]);
-            losers.push_back(numbers[i + 1]);
+            winners.push_back(nums[i + 1]);
+            losers.push_back(nums[i]);
         }
         else
         {
-            winners.push_back(numbers[i + 1]);
-            losers.push_back(numbers[i]);
+            winners.push_back(nums[i]);
+            losers.push_back(nums[i + 1]);
         }
-	}
-    return std::make_pair(winners, losers);
+    }
+    if (nums.size() % 2 != 0)
+        winners.push_back(nums[nums.size()]);
+    return (losers);
 }
