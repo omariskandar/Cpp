@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   PmergeMe.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: omar-iskandarani <omar-iskandarani@stud    +#+  +:+       +#+        */
+/*   By: oiskanda <oiskanda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/31 21:35:13 by oiskanda          #+#    #+#             */
-/*   Updated: 2025/09/03 02:48:34 by omar-iskand      ###   ########.fr       */
+/*   Updated: 2025/09/07 19:06:10 by oiskanda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "PmergeMe.hpp"
 
-int comparisons = 0;
+size_t comparisons = 0;
 
 int	checkNegative(std::vector <int> numbers)
 {
@@ -62,7 +62,7 @@ std::vector<int> convertToVector(int argc, char **argv)
 	{
         if (checkValidNumber(argv[i]))
             exit (1);
-        numbers.push_back(atoi(argv[i]));
+        numbers.push_back(std::atoi(argv[i]));
 	}
 	return numbers;
 }
@@ -77,29 +77,115 @@ void checkSorted(std::vector <int> numbers)
 				return ;
 		}
 	}
-	std::cout << "Sorted\n";
-	exit(0);
+	return ;
 }
 
-std::vector<int> makingPairs(std::vector<int> nums)
+int binarySearch(std::vector<int> vec, int target, int high)
 {
-    std::vector<int> winners;
-    std::vector<int> losers;
-    
-    for (std::vector<int>::size_type i = 0; i < nums.size(); i += 2)
+	if (vec.empty())
+		return 0;
+	int low = 0;
+	if (high >= vec.size())
+		high = vec.size() - 1;
+	while (low <= high)
+	{
+		int mid = (low + high) / 2;
+		comparisons++;
+		if (vec[mid] == target)
+			return mid;
+		else if (vec[mid] > target)
+			high = mid - 1;
+		else
+			low = mid + 1;
+	}
+	return low;
+}
+
+int jacobsthalSeq(int n)
+{
+    if (n == 0)
+        return 0;
+    if (n == 1)
+        return 1;
+    int prev2 = 0, prev1 = 1, curr = 0;
+    for (int i = 2; i <= n; i++)
     {
-        if (nums[i] < nums[i + 1])
-        {
-            winners.push_back(nums[i + 1]);
-            losers.push_back(nums[i]);
+        curr = prev1 + 2 * prev2;
+        prev2 = prev1;
+        prev1 = curr;
+    }
+    return curr;
+}
+
+std::vector<int> JacobthalIndices(int size)
+{
+    std::vector<int> jacobSequence;
+    int jacobIndex = 3;
+    while (jacobsthalSeq(jacobIndex) <= size)
+    {
+        jacobSequence.push_back(jacobsthalSeq(jacobIndex));
+        jacobIndex++;
+    }
+    return jacobSequence;
+}
+
+std::vector<size_t> buildJacobFullOrder(size_t pend_len)
+{
+    std::vector<size_t> order;
+    if (pend_len == 0)
+		return order;
+    std::vector<char> used(pend_len, 0);
+    order.push_back(0);
+    used[0] = 1;
+    std::vector<size_t> J;
+    J.push_back(0);
+    J.push_back(1);
+    while (true)
+	{
+        size_t n = J.size();
+        size_t next = J[n-1] + 2 * J[n-2];
+        if (next > pend_len)
+			break;
+        J.push_back(next);
+    }
+    size_t prevJ = 1;
+    for (size_t k = 2; k < J.size(); ++k)
+	{
+        size_t hi = J[k];
+        size_t lo = prevJ + 1;
+        if (lo < 2) lo = 2;
+
+        if (lo <= hi)
+		{
+            for (size_t x = hi; ; --x)
+			{
+                size_t idx0 = x - 1;
+                if (idx0 < pend_len && !used[idx0])
+				{
+                    order.push_back(idx0);
+                    used[idx0] = 1;
+                }
+                if (x == lo)
+					break;
+            }
         }
-        else
-        {
-            winners.push_back(nums[i]);
-            losers.push_back(nums[i + 1]);
+        prevJ = hi;
+    }
+    if (pend_len >= 2)
+	{
+        size_t x = pend_len - 1;
+        while (true)
+		{
+            if (!used[x])
+			{
+                order.push_back(x);
+                used[x] = 1;
+            }
+            if (x == 1) break;
+            --x;
         }
     }
-    if (nums.size() % 2 != 0)
-        winners.push_back(nums[nums.size()]);
-    return (losers);
+    return order;
 }
+
+
