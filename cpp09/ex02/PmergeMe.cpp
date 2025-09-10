@@ -5,92 +5,41 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: oiskanda <oiskanda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/31 21:35:13 by oiskanda          #+#    #+#             */
-/*   Updated: 2025/09/07 19:06:10 by oiskanda         ###   ########.fr       */
+/*   Created: 2025/09/10 13:12:30 by oiskanda          #+#    #+#             */
+/*   Updated: 2025/09/10 18:23:02 by oiskanda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "PmergeMe.hpp"
 
-size_t comparisons = 0;
+int comparisons = 0;
 
-int	checkNegative(std::vector <int> numbers)
+PmergeMe::PmergeMe() {};
+
+PmergeMe::PmergeMe(const PmergeMe& other)
 {
-	for (std::vector<int>::size_type i = 0; i < numbers.size(); i++)
-		if (numbers[i] < 0)
-		{
-			std::cout << "Negative numbers\n";
-			return (0);
-		}
-	return (1);
+	(void)other;
+}
+PmergeMe& PmergeMe::operator=(const PmergeMe& other)
+{
+	if (this != &other)
+		(void)other;
+	return (*this);
 }
 
-int	checkDuplicates(std::vector <int> numbers)
-{
-	for (std::vector<int>::size_type i = 0; i < numbers.size(); i++)
-	{
-		for (std::vector<int>::size_type j = i + 1; j < numbers.size(); j++)
-		{
-			if (numbers[j] == numbers[i])
-			{
-				std::cout << "Duplicates found\n";
-				return (1);
-			}
-		}
-	}
-	return (0);
-}
+PmergeMe::~PmergeMe() {};
 
-static int checkValidNumber(char *argv)
-{
-    for (int i = 0; argv[i]; i++)
-    {
-        if (!isdigit(argv[i]))
-        {
-            std::cout << "Must only contain digits\n";
-            return (1);
-        }
-    }
-    return (0);
-}
-
-std::vector<int> convertToVector(int argc, char **argv)
-{
-	std::vector <int> numbers;
-
-	for (int i = 1; i < argc; i++)
-	{
-        if (checkValidNumber(argv[i]))
-            exit (1);
-        numbers.push_back(std::atoi(argv[i]));
-	}
-	return numbers;
-}
-
-void checkSorted(std::vector <int> numbers)
-{
-	for(std::vector<int>::size_type i = 0; i < numbers.size(); i++)
-	{
-		for(std::vector<int>::size_type j = i + 1; j < numbers.size(); j++)
-		{
-			if (numbers[i] > numbers[j])
-				return ;
-		}
-	}
-	return ;
-}
-
-int binarySearch(std::vector<int> vec, int target, int high)
+int BinarySearch(const std::vector <int> &vec, int target, int high)
 {
 	if (vec.empty())
 		return 0;
 	int low = 0;
-	if (high >= vec.size())
+	if (high >= static_cast<int>(vec.size()))
 		high = vec.size() - 1;
 	while (low <= high)
 	{
 		int mid = (low + high) / 2;
-		comparisons++;
+		++comparisons;
 		if (vec[mid] == target)
 			return mid;
 		else if (vec[mid] > target)
@@ -101,7 +50,7 @@ int binarySearch(std::vector<int> vec, int target, int high)
 	return low;
 }
 
-int jacobsthalSeq(int n)
+int jacobsThalSeq(int n)
 {
     if (n == 0)
         return 0;
@@ -121,71 +70,168 @@ std::vector<int> JacobthalIndices(int size)
 {
     std::vector<int> jacobSequence;
     int jacobIndex = 3;
-    while (jacobsthalSeq(jacobIndex) <= size)
+    while (jacobsThalSeq(jacobIndex) <= size)
     {
-        jacobSequence.push_back(jacobsthalSeq(jacobIndex));
+        jacobSequence.push_back(jacobsThalSeq(jacobIndex));
         jacobIndex++;
     }
     return jacobSequence;
 }
 
-std::vector<size_t> buildJacobFullOrder(size_t pend_len)
+int getIndex(std::vector<int>& vec, int value)
 {
-    std::vector<size_t> order;
-    if (pend_len == 0)
-		return order;
-    std::vector<char> used(pend_len, 0);
-    order.push_back(0);
-    used[0] = 1;
-    std::vector<size_t> J;
-    J.push_back(0);
-    J.push_back(1);
-    while (true)
-	{
-        size_t n = J.size();
-        size_t next = J[n-1] + 2 * J[n-2];
-        if (next > pend_len)
-			break;
-        J.push_back(next);
-    }
-    size_t prevJ = 1;
-    for (size_t k = 2; k < J.size(); ++k)
-	{
-        size_t hi = J[k];
-        size_t lo = prevJ + 1;
-        if (lo < 2) lo = 2;
+	if (value == -1)
+		return vec.size();
+    std::vector<int>::iterator it = std::find(vec.begin(), vec.end(), value);
+    	if (it != vec.end())
+        	return static_cast<int>(std::distance(vec.begin(), it));
+    return -1;
+}
 
-        if (lo <= hi)
-		{
-            for (size_t x = hi; ; --x)
-			{
-                size_t idx0 = x - 1;
-                if (idx0 < pend_len && !used[idx0])
-				{
-                    order.push_back(idx0);
-                    used[idx0] = 1;
+static void genInsertionOrder(std::vector<int>& jacob, std::vector<int>& pend)
+{
+    std::vector<int>::iterator it = jacob.begin();
+    std::vector<int> pushedNumbers;
+    std::vector<int> temp;
+    while (it != jacob.end())
+    {
+        int x;
+        if (*it >= 0)
+        {
+            x = *it;
+            while (x > 1)
+            {
+                if (std::find(pushedNumbers.begin(), pushedNumbers.end(), x) == pushedNumbers.end())
+                {
+                    temp.push_back(x - 1);
+                    pushedNumbers.push_back(x);
                 }
-                if (x == lo)
-					break;
+                else
+                    break;
+                x--;
             }
         }
-        prevJ = hi;
+        it++;
     }
-    if (pend_len >= 2)
-	{
-        size_t x = pend_len - 1;
-        while (true)
-		{
-            if (!used[x])
-			{
-                order.push_back(x);
-                used[x] = 1;
+    if (temp.size() == pend.size())
+        jacob = temp;
+    else
+    {
+        int x = pend.size();
+        while (temp.size() < pend.size())
+        {
+            if (std::find(pushedNumbers.begin(), pushedNumbers.end(), x) == pushedNumbers.end())
+            {
+                temp.push_back(x - 1);
+                pushedNumbers.push_back(x);
             }
-            if (x == 1) break;
-            --x;
+            else
+                break;
+            x--;
         }
+        jacob = temp;
     }
-    return order;
 }
 
 
+int findSecondByFirst(const std::vector< std::pair<int,int> >& vp, int first)
+{
+    for (std::vector< std::pair<int,int> >::const_iterator it = vp.begin();
+         it != vp.end(); ++it)
+    {
+        if (it->first == first)
+            return it->second;
+    }
+    return -1;
+}
+
+int findFirstBySecond(const std::vector< std::pair<int,int> >& vp, int second)
+{
+    for (std::vector< std::pair<int,int> >::const_iterator it = vp.begin();
+         it != vp.end(); ++it)
+    {
+        if (it->second == second)
+            return it->first;
+    }
+    return -1;
+}
+
+static std::vector<int> arrangeLosers(std::vector<std::pair<int , int> > main_chain, std::vector<int> losers, std::vector<int> winners, int odd)
+{
+	std::vector<int> temp;
+	PmergeMe a;
+
+	for (std::vector<int>::iterator it = winners.begin(); it != winners.end(); ++it)
+	{
+		int val = *it;
+		int x = findSecondByFirst(main_chain, val);
+		temp.push_back(x);
+	}
+
+	if (odd != -1)
+		temp.push_back(odd);
+	losers.swap(temp);
+	return losers;
+}
+
+void PmergeMe::mergeInsertionSort(std::vector<int>& a)
+{
+	if (a.size() <= 1)
+		return ;
+
+	std::vector<std::pair<int , int> > main_chain;
+	std::vector<int> winners, losers;
+	int odd = -1;
+	for (size_t i = 0; i < a.size(); i += 2)
+	{
+		if (i + 1 < a.size())
+		{
+			comparisons++;
+			if (a[i] > a[i + 1])
+				std::swap(a[i], a[i + 1]);
+			main_chain.push_back(std::make_pair(a[i + 1], a[i]));
+		}
+		else
+			odd = a[i];
+	}
+
+	for (size_t i = 0; i < main_chain.size(); ++i)
+	{
+		winners.push_back(main_chain[i].first);
+		losers.push_back(main_chain[i].second);
+	}
+
+	if(odd != -1)
+		losers.push_back(odd);
+
+	mergeInsertionSort(winners);
+
+	losers = arrangeLosers(main_chain, losers, winners, odd);
+	std::vector<int> insertion_order = JacobthalIndices(losers.size());
+	genInsertionOrder(insertion_order, losers);
+
+	std::vector<int>::iterator pos1;
+	pos1 = winners.begin() + 0;
+
+	if (insertion_order.size() > 1)
+	{
+		winners.insert(pos1, losers[0]);
+		losers[0] = -1;
+	}
+
+	for (std::vector<int>::iterator it = insertion_order.begin(); it != insertion_order.end(); ++it)
+	{
+		int index = *it;
+		if (index < 0 || static_cast<size_t>(index) >= losers.size())
+			continue ;
+		int val = losers[index];
+		if (val == -1)
+			continue ;
+		int lim = getIndex(winners, findFirstBySecond(main_chain, val)) - 1;
+		std::vector<int>::iterator pos;
+		pos = winners.begin() + BinarySearch(winners, val, lim);
+		winners.insert(pos, val);
+	}
+
+	a.swap(winners);
+}
