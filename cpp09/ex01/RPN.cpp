@@ -6,7 +6,7 @@
 /*   By: oiskanda <oiskanda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 14:29:48 by oiskanda          #+#    #+#             */
-/*   Updated: 2025/09/05 17:19:22 by oiskanda         ###   ########.fr       */
+/*   Updated: 2025/09/09 17:31:57 by oiskanda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ int evaluateRPN(const std::string &expr) {
             int result = do_op(num1, num2, token);
             st.push(result);
         }
-        else if (token.size() == 1 && isdigit(token[0]))
+        else if (token.size() == 1 && std::isdigit(token[0]))
 		{
             int value = token[0] - '0';
             st.push(value);

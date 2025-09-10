@@ -6,7 +6,7 @@
 /*   By: oiskanda <oiskanda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 17:40:28 by oiskanda          #+#    #+#             */
-/*   Updated: 2025/09/05 17:54:15 by oiskanda         ###   ########.fr       */
+/*   Updated: 2025/09/10 18:12:43 by oiskanda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int main(int argc, char** argv) {
     }
 
     try {
-        BitcoinExchange btc("data.csv"); // database provided with subject
+        BitcoinExchange btc("data.csv");
         btc.processInput(argv[1]);
     } catch (std::exception &e) {
         std::cerr << e.what() << std::endl;

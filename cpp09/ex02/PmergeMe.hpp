@@ -6,7 +6,7 @@
 /*   By: oiskanda <oiskanda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/10 13:09:30 by oiskanda          #+#    #+#             */
-/*   Updated: 2025/09/10 16:33:52 by oiskanda         ###   ########.fr       */
+/*   Updated: 2025/09/10 19:02:12 by oiskanda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 #include <iostream>
 #include <vector>
+#include <deque>
 #include <algorithm>
 
 extern int comparisons;
@@ -26,6 +27,8 @@ class PmergeMe
 		PmergeMe &operator=(const PmergeMe& other);
 		~PmergeMe();
 		void mergeInsertionSort(std::vector<int>& a);
+		void mergeInsertionSort(std::deque<int>&  a);
+
 
 };
 

@@ -6,7 +6,7 @@
 /*   By: oiskanda <oiskanda@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 17:40:09 by oiskanda          #+#    #+#             */
-/*   Updated: 2025/09/05 18:21:07 by oiskanda         ###   ########.fr       */
+/*   Updated: 2025/09/10 18:13:02 by oiskanda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void BitcoinExchange::loadDatabase(const std::string& dbFile) {
         throw std::runtime_error("Error: could not open database file");
 
     std::string line;
-    std::getline(file, line); // skip header
+    std::getline(file, line);
     while (std::getline(file, line)) {
         std::stringstream ss(line);
         std::string date, valueStr;
@@ -50,14 +50,12 @@ bool BitcoinExchange::isValidDate(const std::string& date) const {
     if (m < 1 || m > 12 || d < 1 || d > 31)
         return false;
 
-    // February (with leap year check)
     if (m == 2) {
         bool leap = (y % 4 == 0 && (y % 100 != 0 || y % 400 == 0));
         if (d > (leap ? 29 : 28))
             return false;
     }
 
-    // Months with 30 days
     if ((m == 4 || m == 6 || m == 9 || m == 11) && d > 30)
         return false;
 
@@ -80,7 +78,7 @@ void BitcoinExchange::processInput(const std::string& inputFile) {
         throw std::runtime_error("Error: could not open input file.");
 
     std::string line;
-    std::getline(file, line); // skip header
+    std::getline(file, line);
     while (std::getline(file, line)) {
         if (line.empty())
             continue;
